@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { nanoid } from 'nanoid';
 import { Form, ErrorMessage, FormField, Field } from './ContactForm.styled';
 import { useDispatch } from 'react-redux';
-import { addContact } from '../../redux/contacts/contactsSlice';
+import { addContact } from '../../redux/operations';
 
 const regExpForName =
   /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/;
@@ -12,7 +12,7 @@ const regExpForNumber =
 
 const UserSchema = Yup.object().shape({
   name: Yup.string().matches(regExpForName).required('Requered field'),
-  number: Yup.string()
+  phone: Yup.string()
     .matches(regExpForNumber, 'Invalid phone number')
     .max(17, 'Must be < 17!')
     .min(4, 'Must be > 4!')
@@ -26,11 +26,11 @@ export const ContactForm = () => {
     <Formik
       initialValues={{
         name: '',
-        number: '',
+        phone: '',
       }}
       validationSchema={UserSchema}
       onSubmit={(values, actions) => {
-        dispatch(addContact({ ...values, id: nanoid() }));
+        dispatch(addContact(values));
         actions.resetForm();
       }}
     >
@@ -48,7 +48,7 @@ export const ContactForm = () => {
           Number
           <Field
             type="tel"
-            name="number"
+            name="phone"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
           />
